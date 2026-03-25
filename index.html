@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ข้อมูลสารสนเทศผลงานและรางวัล กลุ่มสาระฯ คณิตศาสตร์</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+
+  <style>
+    /* 🏷️ ป้าย Update สีส้มสดใส */
+/* ป้าย UPDATE มุมขวาบน */
+.badge-update {
+  position: absolute;
+  top: 15px;
+  right: -5px;
+  background: linear-gradient(45deg, #ff8c00, #ff4500);
+  color: white;
+  padding: 5px 15px;
+  border-radius: 50px 0 0 50px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: -2px 4px 8px rgba(255, 69, 0, 0.3);
+  z-index: 5;
+}
+
+/* แถบถ้วยรางวัลด้านล่างชื่อ */
+.award-status-bar {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 8px 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.award-status-bar i { color: #ffc107; }
+.award-status-bar span { font-weight: bold; color: #495057; }
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #0dcaf0;
+      --success-gradient: linear-gradient(135deg, #198754, #20c997);
+      --info-gradient: linear-gradient(135deg, #0dcaf0, #0d6efd);
+      --warning-gradient: linear-gradient(135deg, #ffc107, #fd7e14);
+    }
+
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Sarabun', sans-serif; 
+      padding-top: 80px; 
+    }
+
+    /* 🎨 Navbar Style */
+    .navbar { 
+      background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    }
+    .nav-link { cursor: pointer; font-weight: 500; transition: all 0.3s; }
+    .nav-link:hover { transform: translateY(-2px); opacity: 0.9; }
+
+/* -----------------------------------------------------------
+       📊 1. ส่วนหัวและสถิติ (Stat Cards) - แก้เป็น Option 1
+    ----------------------------------------------------------- */
+    .header-banner {
+      background: linear-gradient(135deg, #0d6efd, #6610f2);
+      color: white;
+      padding: 40px 20px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+    }
+    
+    .stat-card {
+      border: none;
+      border-radius: 15px;
+      color: white;
+      transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+    }
+    
+    /* 🌟 แก้ไข: เลื่อนขึ้นตรงๆ นุ่มนวล ไม่มีการ rotate */
+    .stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    /* -----------------------------------------------------------
+       👥 2. ส่วนทำเนียบครู (Teacher Section) 
+    ----------------------------------------------------------- */
+    #page-teachers .row.g-4 {
+      margin-top: 50px; 
+    }
+
+    .teacher-card {
+      border-radius: 20px;
+      border: none;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+    }
+
+    #page-teachers .teacher-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 40px rgba(13, 110, 253, 0.12);
+    }
+
+    .profile-img-wrapper {
+      padding-top: 65px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .teacher-img {
+      width: 130px; height: 130px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      margin-top: -65px; 
+      transition: all 0.4s ease;
+    }
+
+    #page-teachers .teacher-card:hover .teacher-img {
+      transform: scale(1.05);
+      border-color: #0d6efd;
+    }
+
+   /* -----------------------------------------------------------
+       📸 3. ปรับแต่งไอคอนกล้อง (Floating Camera) - แก้ตำแหน่งและสี
+    ----------------------------------------------------------- */
+    .edit-pic-btn {
+      position: absolute;
+      /* 🌟 แก้ไข: ขยับหนีขอบรูปและลงด้านล่าง */
+      bottom: -5px; 
+      right: calc(50% - 70px); 
+      
+      background: #ffffff !important; /* พื้นหลังขาว (รูปที่ 1) */
+      color: #0d6efd !important;      /* ไอคอนฟ้า (รูปที่ 1) */
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border: 2px solid #fff;
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    /* 🌟 เมื่อโฮเวอร์: เปลี่ยนสีเป็นฟ้า-ขาว (รูปที่ 2) */
+    .edit-pic-btn:hover {
+      background-color: #0d6efd !important;
+      color: #ffffff !important;
+      transform: scale(1.15);
+    }
+
+    .teacher-card .card-body {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 2.8rem 1rem 1.5rem 1rem; /* ปรับสมดุลพื้นที่ */
+      text-align: center;
+    }
+
+    .teacher-card .card-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .teacher-card .btn {
+      margin-top: auto;
+      border-radius: 50px;
+    }
+
+    /* ✨ Animation เปลี่ยนหน้า */
+    .page-section { display: none; }
+    .page-section.active {
+      display: block;
+      animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 📱 Responsive */
+    @media (max-width: 768px) {
+      .header-banner { padding: 30px 15px; }
+      .header-banner h2 { font-size: 1.3rem; }
+      .teacher-card { margin-top: 65px; }
+    }
+
+
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#" onclick="showPage('page-home')"><i class="fas fa-calculator me-2"></i> MATH SM</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" onclick="showPage('page-home', this)"><i class="fas fa-home me-1"></i> หน้าหลัก</a></li>
+          <li class="nav-item"><a class="nav-link" onclick="showPage('page-form', this)"><i class="fas fa-plus-circle me-1"></i> เพิ่มผลงาน</a></li>
+          <li class="nav-item"><a class="nav-link" onclick="showPage('page-table', this)"><i class="fas fa-file-invoice me-1"></i> รายงาน</a></li>
+          <li class="nav-item"><a class="nav-link" onclick="showPage('page-teachers', this)"><i class="fas fa-user-friends me-1"></i> ครู</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    
+    <div id="page-home" class="page-section active">
+  <div class="header-banner text-center">
+    <h2 class="fw-bold mb-2">ข้อมูลสารสนเทศผลงานและรางวัล</h2>
+    <p class="mb-0 opacity-75 fs-5">กลุ่มสาระการเรียนรู้คณิตศาสตร์ โรงเรียนสูงเม่นชนูปถัมภ์</p>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-6">
+      <div class="card stat-card p-4 h-100" style="background: linear-gradient(135deg, #fd7e14, #ffc107);">
+        <div class="d-flex justify-content-between align-items-center">
+          <div><p class="mb-0 fs-5">ผลงานทั้งหมดในระบบ</p><h1 class="fw-bold mb-0" id="stat-total">0</h1></div>
+          <i class="fas fa-database fa-4x opacity-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card stat-card p-4 h-100" style="background: linear-gradient(135deg, #0d6efd, #0dcaf0);">
+        <div class="d-flex justify-content-between align-items-center">
+          <div><p class="mb-0 fs-5">ชั่วโมงอบรมรวมปีนี้</p><h1 class="fw-bold mb-0" id="stat-training">0</h1></div>
+          <i class="fas fa-clock fa-4x opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-3 col-6">
+      <div class="card stat-card p-3 h-100" style="background: linear-gradient(135deg, #198754, #20c997);">
+        <div class="text-center">
+          <p class="mb-1 small">ระดับประเทศ</p>
+          <h3 class="fw-bold mb-0" id="stat-national">0</h3>
+          <i class="fas fa-trophy mt-2 opacity-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card stat-card p-3 h-100" style="background: linear-gradient(135deg, #6610f2, #6f42c1);">
+        <div class="text-center">
+          <p class="mb-1 small">ระดับภาค</p>
+          <h3 class="fw-bold mb-0" id="stat-region">0</h3>
+          <i class="fas fa-map-marked-alt mt-2 opacity-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card stat-card p-3 h-100" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+        <div class="text-center">
+          <p class="mb-1 small">ระดับจังหวัด</p>
+          <h3 class="fw-bold mb-0" id="stat-province">0</h3>
+          <i class="fas fa-medal mt-2 opacity-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card stat-card p-3 h-100" style="background: linear-gradient(135deg, #20c997, #0dcaf0);">
+        <div class="text-center">
+          <p class="mb-1 small">ระดับเขต/พื้นที่</p>
+          <h3 class="fw-bold mb-0" id="stat-district">0</h3>
+          <i class="fas fa-award mt-2 opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div id="page-form" class="page-section">
+      <div class="card teacher-card shadow-sm p-4 p-md-5">
+        <h4 class="fw-bold text-primary mb-4"><i class="fas fa-edit me-2"></i> บันทึกข้อมูลผลงานใหม่</h4>
+        <form id="awardForm" onsubmit="handleFormSubmit(event)">
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">ประเภทผลงาน</label>
+      <select class="form-select" id="awardTypeSelect" name="awardType" required>
+        <option value="" selected disabled>-- เลือกประเภท --</option>
+        <option value="teacher_coach">ครูผู้ฝึกสอน</option>
+        <option value="self_development">การพัฒนาตนเอง </option>
+        <option value="awards_honors">รางวัลยกย่องเชิดชูเกียรติ</option>
+        <option value="academic_innovation">ผลงานวิชาการ/นวัตกรรม</option>
+        <option value="guest_speaker">วิทยากร</option>
+        <option value="committee">คณะกรรมการ</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">วันที่ได้รับ/ผ่านการอบรม</label>
+      <input type="date" class="form-control" name="awardDate" id="awardDate" required>
+    </div>
+    <div class="col-md-4" id="trainingHoursSection" style="display:none;">
+      <label class="form-label fw-bold text-primary">จำนวนชั่วโมง</label>
+      <input type="number" class="form-control border-primary" name="trainingHours" id="trainingHours" step="0.5" placeholder="0.0">
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label fw-bold">ครูผู้รับผิดชอบ/เจ้าของผลงาน</label>
+    <select class="form-select" name="teacherName" id="teacherNameSelect" required>
+      <option value="" selected disabled>-- เลือกรายชื่อ --</option>
+      <option value="somrit">นายสมฤทธิ์ วันชัย</option>
+      <option value="pijittra">นางพิจิตรา ศรีอินทยุทธ</option>
+      <option value="nantiya">นางสาวนันทิยา เครือพาน</option>
+      <option value="wanchalerm">นายวันเฉลิม ระลาธิ</option>
+      <option value="teeranat">นายธีรนาถ อาจาบาล</option>
+      <option value="sirilak">นางสาวศิริลักษณ์ ร่องพืช</option>
+      <option value="sorawit">นายสรวิศ สุวรรณนาค</option>
+      <option value="kusuma">นางสาวกุสุมา ลีกา</option>
+    </select>
+  </div>
+
+  <div id="studentSection" class="student-section mb-4" style="display:none;">
+    <label class="form-label fw-bold text-success"><i class="fas fa-user-graduate me-1"></i> ข้อมูลนักเรียน</label>
+    <div id="studentList"></div>
+    <button type="button" class="btn btn-sm btn-outline-success mt-2" onclick="addStudentRow()"><i class="fas fa-plus"></i> เพิ่มนักเรียน</button>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-8">
+      <label class="form-label fw-bold">ชื่อรางวัล / รายการ / หัวข้อ</label>
+      <input type="text" class="form-control" name="awardName" id="awardName" placeholder="เช่น การอบรมเชิงปฏิบัติการการใช้ AI..." required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">หน่วยงาน / จังหวัด</label>
+      <input type="text" class="form-control" name="eventLocation" id="eventLocation" placeholder="เช่น สพม.แพร่" required>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-5">
+    <div class="col-md-4" id="levelContainer">
+      <label class="form-label fw-bold">ระดับผลงาน</label>
+      <select class="form-select" name="awardLevel" id="awardLevelSelect">
+        <option value="" selected disabled>-- เลือกหมวด --</option>
+        <option value="school">ระดับโรงเรียน</option><option value="district">ระดับเขตฯ</option>
+        <option value="province">ระดับจังหวัด</option><option value="region">ระดับภาค</option>
+        <option value="national">ระดับประเทศ</option><option value="international">ระดับนานาชาติ</option>
+      </select>
+    </div>
+    <div class="col-md-4" id="resultContainer">
+      <label class="form-label fw-bold">ผลรางวัล</label>
+      <select class="form-select" name="awardResult" id="awardResultSelect">
+        <option value="" selected disabled>-- เลือกผล --</option>
+        <option value="gold">เหรียญทอง</option><option value="silver">เหรียญเงิน</option><option value="bronze">เหรียญทองแดง</option>
+        <option value="winner">ชนะเลิศ</option><option value="runner_up_1">รองชนะเลิศอันดับ 1</option><option value="participated">เข้าร่วม/ผ่าน</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">แนบเกียรติบัตร (ไฟล์/รูป)</label>
+      <input type="file" class="form-control" id="certificateFile" onchange="previewFile(this)">
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-submit w-100 py-3 fw-bold fs-5 shadow"><i class="fas fa-save me-2"></i> บันทึกข้อมูลเข้าสู่ระบบ</button>
+</form>
+      </div>
+    </div>
+
+    <div id="page-table" class="page-section">
+      <div class="card teacher-card shadow-sm p-4">
+        <h4 class="fw-bold text-primary mb-4"><i class="fas fa-list-alt me-2"></i> สรุปรายงานผลงานคณิตศาสตร์</h4>
+        <div class="table-responsive">
+          <table id="dataTable" class="table table-hover align-middle w-100">
+            <thead class="bg-light">
+  <tr>
+    <th>วันที่ได้รับ</th>
+    <th>ครูผู้รับผิดชอบ</th>
+    <th>ประเภท</th>
+    <th>รางวัล/รายการ</th>
+    <th>ระดับ</th>
+    <th>ลิงก์ไฟล์</th> <th>จัดการ</th>
+  </tr>
+</thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-teachers" class="page-section">
+      <h4 class="fw-bold text-primary mb-5"><i class="fas fa-users me-2"></i> ครูกลุ่มสาระการเรียนรู้คณิตศาสตร์</h4>
+      <div class="row g-4" id="teacherGrid">
+        </div>
+    </div>
+
+  </div>
+
+  <div class="modal fade" id="profileUploadModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white border-0">
+          <h5 class="modal-title"><i class="fas fa-camera me-2"></i> เปลี่ยนรูปโปรไฟล์</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <p class="fw-bold fs-5 mb-3" id="profileUploadTeacherName"></p>
+          <input class="form-control mb-4" type="file" id="newProfilePic" accept="image/*">
+          <button class="btn btn-primary w-100 py-2" onclick="submitProfilePic()">เริ่มอัปโหลดรูปภาพใหม่</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    let dataTable;
+
+/**
+ * 1. ระบบสลับหน้า (showPage) ฉบับสมบูรณ์
+ * แก้ปัญหา: ข้อมูลค้าง, ฟอร์มไม่สะอาด, และจัดการการมองเห็นของส่วนขยาย (Student/Hours)
+ */
+function showPage(pageId, navItem) {
+  // --- ก. จัดการเรื่องไฮไลท์เมนูบน Navbar ---
+  $('.nav-link').removeClass('active');
+  if (navItem) {
+    $(navItem).addClass('active');
+  } else {
+    // กรณีเรียกจากปุ่มในหน้าเว็บ (เช่น ปุ่ม "ดูผลงาน" หรือ "แก้ไข")
+    if (pageId === 'page-table') $('.nav-link:contains("รายงาน")').addClass('active');
+    if (pageId === 'page-form') $('.nav-link:contains("เพิ่มผลงาน")').addClass('active');
+    if (pageId === 'page-home') $('.nav-link:contains("หน้าหลัก")').addClass('active');
+  }
+
+  // --- ข. สลับการแสดงผลหน้าจอ ---
+  $('.page-section').removeClass('active');
+  $(`#${pageId}`).addClass('active');
+
+  // --- ค. ตรรกะการ "คืนค่าอิสระ" (Reset Logic) ---
+  
+  // 1. กรณีเข้าหน้า "เพิ่มผลงาน" (และไม่ได้กดมาจากปุ่มแก้ไข)
+  if (pageId === 'page-form' && !window.isEditing) {
+    const form = document.getElementById('awardForm');
+    form.reset(); // ล้างข้อมูลในช่องพิมพ์ทั้งหมด
+    
+    $('#editId').remove(); // ลบ ID ลับทิ้ง เพื่อให้เป็นการ "เพิ่มใหม่" ไม่ใช่ "แก้ไข"
+    $('#beYearLabel, #oldFileLabel').remove(); // ล้างป้ายวันที่ พ.ศ. และลิงก์รูปเก่า
+    $('.student-row').remove(); // ล้างแถวรายชื่อนักเรียนที่เพิ่มค้างไว้
+    
+    // 🌟 ใช้ Master Switch สั่งซ่อน StudentSection และ TrainingHoursSection ทันที
+    if (typeof updateFormVisibility === "function") {
+      updateFormVisibility(''); 
+    } else {
+      $('#studentSection, #trainingHoursSection').hide();
+    }
+    
+    $('.btn-submit').html('<i class="fas fa-save me-2"></i> บันทึกข้อมูลเข้าสู่ระบบ');
+  }
+
+  // 2. กรณีเข้าหน้า "รายงาน" (และไม่ได้กดมาจากปุ่ม "ดูผลงาน" ของครู)
+  if (pageId === 'page-table' && !window.isFiltering) {
+    if (dataTable) {
+      dataTable.search('').draw(); // ล้างช่องค้นหาให้ว่าง เพื่อแสดงงานของทุกคน
+    }
+  }
+
+  // --- ง. ปิดท้าย ---
+  window.isEditing = false;   // คืนค่าสถานะแก้ไขเป็นเท็จ
+  window.isFiltering = false; // คืนค่าสถานะการกรองเป็นเท็จ
+  window.scrollTo(0, 0);      // เลื่อนหน้าจอกลับไปบนสุดทุกครั้งที่เปลี่ยนหน้า
+}
+
+/**
+ * 4. ฟังก์ชันจัดการการส่งฟอร์ม (ฉบับสมบูรณ์สำหรับต้นแบบ)
+ */
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const btn = $('.btn-submit');
+  const form = document.getElementById('awardForm');
+  const formData = new FormData(form);
+  const dataObj = Object.fromEntries(formData.entries());
+  
+  // เก็บข้อมูลนักเรียนจากแถวที่เพิ่มแบบ Dynamic
+  dataObj.studentName = Array.from(document.getElementsByName('studentName[]')).map(i => i.value);
+  dataObj.studentClass = Array.from(document.getElementsByName('studentClass[]')).map(i => i.value);
+  dataObj.studentRoom = Array.from(document.getElementsByName('studentRoom[]')).map(i => i.value);
+
+  btn.html('<i class="fas fa-spinner fa-spin"></i> กำลังอัปโหลดและบันทึก...').prop('disabled', true);
+
+  const fileInput = document.getElementById('certificateFile');
+  
+  if (fileInput.files.length > 0) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const fileData = {
+        filename: fileInput.files[0].name,
+        mimeType: fileInput.files[0].type,
+        base64: evt.target.result.split(',')[1]
+      };
+      
+      google.script.run
+        .withSuccessHandler(fileRes => {
+          dataObj.fileUrl = fileRes.url; 
+          saveToGAS(dataObj, btn, form); 
+        })
+        .withFailureHandler(err => {
+          Swal.fire('Error', 'อัปโหลดไฟล์ไม่สำเร็จ: ' + err, 'error');
+          btn.html('<i class="fas fa-save me-2"></i> บันทึกข้อมูลเข้าสู่ระบบ').prop('disabled', false);
+        })
+        .uploadFileToDrive(fileData, dataObj.id || "AW-" + new Date().getTime());
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    saveToGAS(dataObj, btn, form);
+  }
+}
+
+/**
+ * ฟังก์ชันบันทึกข้อมูลขั้นสุดท้ายลง Google Sheets
+ */
+function saveToGAS(obj, btn, form) {
+  google.script.run
+    .withSuccessHandler(res => {
+      Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้วครับ', 'success');
+      btn.html('<i class="fas fa-save me-2"></i> บันทึกข้อมูลเข้าสู่ระบบ').prop('disabled', false);
+      form.reset();
+      $('#studentSection, #trainingHoursSection').hide();
+      if($('#editId').length) $('#editId').remove();
+      
+      // ล้างป้ายวันที่ พ.ศ. และป้ายไฟล์เดิมออก (ถ้ามี)
+      $('#beYearLabel, #oldFileLabel').remove();
+      
+      loadAwardData();
+      updateDashboardStats();
+    })
+    .withFailureHandler(err => {
+      // 🌟 เพิ่มส่วนนี้: เพื่อแจ้งเตือนถ้าบันทึกสเปรดชีตไม่สำเร็จ
+      Swal.fire('Error', 'บันทึกข้อมูลลง Sheet ไม่สำเร็จ: ' + err, 'error');
+      btn.html('<i class="fas fa-save me-2"></i> บันทึกข้อมูลเข้าสู่ระบบ').prop('disabled', false);
+    })
+    .saveData(obj);
+}
+// 5. โหลดข้อมูลและแสดงผลในตาราง (ฉบับแก้ไขการเรียงลำดับวันที่)
+function loadAwardData() {
+  if (dataTable) {
+    dataTable.clear().draw();
+  }
+
+  google.script.run
+    .withSuccessHandler(data => {
+      if (!dataTable || !data) return;
+      dataTable.clear();
+      
+      data.forEach(row => {
+        // 1. เตรียมค่าสำหรับเรียงลำดับ (ใช้ค่าดิบ YYYY-MM-DD จาก row[1])
+        let dateForSort = row[1] || ""; 
+        
+        // 2. จัดการรูปแบบวันที่แสดงผล (พ.ศ.)
+        let displayThaiDate = "-";
+        if (row[1]) {
+          let d = new Date(row[1]);
+          if (!isNaN(d.getTime())) {
+            // 🌟 เทคนิคเด็ด: แอบใส่วันที่สากลซ่อนไว้ใน span เพื่อให้ DataTable ใช้เรียงลำดับได้ถูกต้อง
+            displayThaiDate = `<span style="display:none">${dateForSort}</span>` + 
+                              d.toLocaleDateString('th-TH', {
+                                day: '2-digit', month: '2-digit', year: 'numeric'
+                              });
+          } else {
+            displayThaiDate = row[1];
+          }
+        }
+
+        // 3. สร้างปุ่มจัดการ (Action Buttons)
+        const btns = `
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-info" title="ดูไฟล์" onclick="viewFile('${row[9]}')">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-outline-warning" title="แก้ไข" onclick="editRow('${row[0]}')">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-outline-danger" title="ลบ" onclick="deleteRow('${row[0]}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+
+        // 4. เพิ่มข้อมูลลงตาราง (จัดคอลัมน์ตามที่คุณครูต้องการ)
+        dataTable.row.add([
+          displayThaiDate, // คอลัมน์ที่ 0: วันที่ (ที่มีค่าซ่อนสำหรับเรียงลำดับ)
+          row[3],          // คอลัมน์ที่ 1: ครูผู้รับผิดชอบ
+          row[4],          // คอลัมน์ที่ 2: ประเภท
+          row[5],          // คอลัมน์ที่ 3: รางวัล/รายการ
+          row[7] || "-",   // คอลัมน์ที่ 4: ระดับ
+          row[9] || "",    // คอลัมน์ที่ 5: ลิงก์ไฟล์ (Hidden คอลัมน์สำหรับ Excel)
+          btns             // คอลัมน์ที่ 6: ปุ่มจัดการ
+        ]);
+      });
+
+      // 🌟 5. สั่งให้เรียงลำดับคอลัมน์แรก (Index 0) จากมากไปน้อย (desc) ทันทีที่โหลดเสร็จ
+      // จะทำให้วันที่ใหม่ล่าสุด (19/03) ขึ้นก่อนวันที่เก่ากว่า (12/03) เสมอครับ
+      dataTable.order([0, 'desc']).draw(false);
+      
+    })
+    .withFailureHandler(err => {
+      Swal.fire('Error', 'โหลดข้อมูลไม่สำเร็จ: ' + err.message, 'error');
+    })
+    .getAwardData();
+}
+
+    // 6. อัปเดตสถิติหน้า Dashboard (ฉบับสมบูรณ์ตัวเดียวจบ)
+function updateDashboardStats() {
+  google.script.run.withSuccessHandler(s => {
+    // ใช้ || 0 เพื่อป้องกันกรณีข้อมูลยังไม่มา จะได้โชว์เลข 0 แทน ไม่โชว์ว่างๆ
+    $('#stat-total').text(s.total || 0);
+    // .toLocaleString() ช่วยใส่คอมม่าให้ตัวเลข เช่น 1,000
+    $('#stat-training').text((s.training || 0).toLocaleString()); 
+    $('#stat-national').text(s.national || 0);
+    $('#stat-region').text(s.region || 0);
+    $('#stat-province').text(s.province || 0);
+    $('#stat-district').text(s.district || 0);
+  }).getDashboardStats();
+}
+
+// 7. ทำเนียบครู (ชุดข้อมูลพื้นฐาน)
+const teachersList = [
+  { id: 'somrit', name: 'นายสมฤทธิ์ วันชัย', pos: 'ครู คศ.3' },
+  { id: 'pijittra', name: 'นางพิจิตรา ศรีอินทยุทธ', pos: 'ครู คศ.3' },
+  { id: 'nantiya', name: 'นางสาวนันทิยา เครือพาน', pos: 'ครู คศ.3' },
+  { id: 'wanchalerm', name: 'นายวันเฉลิม ระลาธิ', pos: 'ครู คศ.3' },
+  { id: 'teeranat', name: 'นายธีรนาถ อาจาบาล', pos: 'ครู' },
+  { id: 'sirilak', name: 'นางสาวศิริลักษณ์ ร่องพืช', pos: 'ครู' },
+  { id: 'sorawit', name: 'นายสรวิศ สุวรรณนาค', pos: 'ครู' },
+  { id: 'kusuma', name: 'นางสาวกุสุมา ลีกา', pos: 'พนักงานราชการ' }
+];
+/**
+ * 🌟 ฟังก์ชันสร้างการ์ดรายชื่อครู (ฉบับสมบูรณ์ที่สุด)
+ * รวมระบบ: เช็คความปลอดภัย + ปุ่มกล้อง + ป้าย UPDATE + แถบถ้วยรางวัล
+ */
+function buildTeacherGrid(profiles) {
+  // 🚩 จุดที่ 1: Safety Check ป้องกันหน้าจอว่างหรือ Error (ตามที่คุณครูเจอ)
+  if (!profiles || !Array.isArray(profiles)) {
+    console.log("กำลังรอข้อมูลจาก Google Sheets...");
+    return;
+  }
+
+  const html = profiles.map(t => {
+    // สร้าง ID พิเศษสำหรับรูปภาพ (ตัดช่องว่างออก)
+    const imgId = "img-" + t.name.replace(/\s/g, '');
+
+    return `
+    <div class="col-md-3 col-sm-6 mb-5">
+      <div class="card teacher-card h-100 shadow-sm border-0" style="position: relative; overflow: visible;">
+        
+        ${t.isNew ? '<div class="badge-update"><i class="fas fa-fire me-1"></i> UPDATE</div>' : ''}
+
+        <div class="profile-img-wrapper text-center pt-5">
+          <div style="position: relative; display: inline-block;">
+            <img src="${t.imageUrl || 'https://ui-avatars.com/api/?name='+encodeURIComponent(t.name)}" 
+                 id="${imgId}" 
+                 class="teacher-img">
+            
+            <div class="edit-pic-btn" 
+                 title="เปลี่ยนรูปโปรไฟล์" 
+                 onclick="openProfileUpload('${imgId}', '${t.name}')">
+              <i class="fas fa-camera"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body text-center d-flex flex-column">
+          <h5 class="card-title mb-1 fw-bold">${t.name}</h5>
+          <p class="text-muted small mb-2">${t.position}</p>
+          
+          <div class="mb-3">
+            <div class="award-status-bar">
+              <i class="fas fa-trophy"></i>
+              <span>${t.awardCount} ผลงาน</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm rounded-pill px-4 mt-auto w-100 shadow-sm" 
+                  onclick="filterByTeacher('${t.name}')">
+            ดูรายละเอียดผลงาน
+          </button>
+        </div>
+      </div>
+    </div>
+    `;
+  }).join('');
+  
+  $('#teacherGrid').html(html);
+}
+
+/**
+ * 2. ฟังก์ชันเปิด Modal อัปโหลดรูป (คงเดิมไว้)
+ */
+let currentImgId = ''; 
+function openProfileUpload(imgId, teacherName) {
+  currentImgId = imgId;
+  $('#profileUploadTeacherName').text(teacherName);
+  $('#newProfilePic').val('');
+  const uploadModal = new bootstrap.Modal(document.getElementById('profileUploadModal'));
+  uploadModal.show();
+}
+
+/**
+ * 3. ส่วนการตั้งค่าเมื่อเปิดหน้าเว็บ (Ready Logic)
+ */
+$(document).ready(() => {
+  // ล้างการเรียก buildTeacherGrid(); แบบเดิมทิ้งไป
+  // แล้วสั่งโหลดข้อมูลจริงจากหลังบ้านแทน
+  loadAwardData();      
+  updateDashboardStats();  
+  loadTeacherProfiles(); // 🌟 บรรทัดนี้จะไปเรียก buildTeacherGrid(profiles) ให้เองอัตโนมัติครับ
+});
+
+/**
+ * ฟังก์ชันประมวลผลการอัปโหลดรูปโปรไฟล์ใหม่
+ */
+function submitProfilePic() {
+  const file = $('#newProfilePic')[0].files[0];
+  if (!file) return Swal.fire('คำเตือน', 'กรุณาเลือกรูปภาพก่อนครับ', 'warning');
+
+  // แสดงสถานะกำลังโหลด
+  Swal.fire({ 
+    title: 'กำลังอัปโหลดรูปใหม่...', 
+    didOpen: () => Swal.showLoading(), 
+    allowOutsideClick: false 
+  });
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const base64 = e.target.result.split(',')[1];
+    const teacherName = $('#profileUploadTeacherName').text();
+
+    google.script.run.withSuccessHandler(url => {
+      // 🌟 เทคนิค Force Refresh: เติม Timestamp ต่อท้ายลิงก์เพื่อป้องกันเบราว์เซอร์จำรูปเก่า
+      const cacheBusterUrl = url + "&t=" + new Date().getTime();
+      
+      // อัปเดตรูปที่หน้าจอทันทีตาม ID ครูที่กดเลือก
+      $(`#${currentImgId}`).attr('src', cacheBusterUrl);
+      
+      // ✅ จุดที่ปรับปรุง: ใช้การอ้างอิง Element โดยตรงเพื่อความแม่นยำในการปิดหน้าต่าง (Modal)
+      const modalElement = document.getElementById('profileUploadModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      
+      Swal.fire({ icon: 'success', title: 'เปลี่ยนรูปสำเร็จ', timer: 1500 });
+      
+      // ล้างค่าช่องเลือกไฟล์ให้ว่าง
+      $('#newProfilePic').val('');
+    })
+    .withFailureHandler(msg => Swal.fire('เกิดข้อผิดพลาด', msg, 'error'))
+    .saveProfileImage(base64, file.type, teacherName);
+  };
+  reader.readAsDataURL(file);
+}
+
+$(document).ready(() => {
+  // 🌟 1. ตั้งค่า DataTable พร้อมระบบ Export และ Print
+  dataTable = $('#dataTable').DataTable({
+    language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json' },
+    
+    // 🚩 ส่วนที่เพิ่มใหม่: สั่งซ่อนคอลัมน์ที่ 5 (ลิงก์ไฟล์) ไม่ให้โชว์บนหน้าจอเว็บ
+    columnDefs: [
+      { targets: [5], visible: false } 
+    ],
+
+    dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>rtip',
+    buttons: [
+      {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel me-2"></i>ส่งออก Excel',
+        className: 'btn btn-success btn-sm shadow-sm',
+        title: function() {
+          let searchTerm = dataTable.search();
+          return searchTerm ? 'ผลงาน_' + searchTerm : 'รายงานผลงานกลุ่มสาระคณิตศาสตร์';
+        },
+        // 🌟 แก้ไขตรงนี้: เพิ่มคอลัมน์ที่ 5 (ลิงก์ไฟล์) เข้าไปในไฟล์ Excel
+        exportOptions: { columns: [0, 1, 2, 3, 4, 5] }
+      },
+      {
+        extend: 'print',
+        text: '<i class="fas fa-print me-2"></i>พิมพ์รายงาน',
+        className: 'btn btn-dark btn-sm shadow-sm',
+        title: '', 
+        // 🌟 พิมพ์รายงานแบบ PDF เอาแค่คอลัมน์ 0-4 เหมือนเดิม (เพื่อความสวยงามประหยัดเนื้อที่)
+        exportOptions: { columns: [0, 1, 2, 3, 4] },
+        customize: function (win) {
+          let searchTerm = dataTable.search();
+          let headerTitle = searchTerm 
+            ? "รายงานสรุปผลงานและรางวัลของ " + searchTerm + " <br>กลุ่มสาระการเรียนรู้คณิตศาสตร์"
+            : "รายงานสรุปผลงานและรางวัล กลุ่มสาระการเรียนรู้คณิตศาสตร์";
+
+          $(win.document.body)
+            .css({
+              'font-family': 'Sarabun',
+              'font-size': '11pt',
+              'margin': '10mm',
+              'padding': '0'
+            })
+            .prepend('<h5 class="text-center" style="font-weight: bold; margin-top: 0; margin-bottom: 12px; line-height: 1.4;">' + headerTitle + '</h5>');
+
+          $(win.document.body).append(
+            '<div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 8px; font-size: 9pt; text-align: right; color: #555;">' +
+            'ข้อมูล ณ วันที่ ' + new Date().toLocaleDateString('th-TH') + ' | ระบบ Math SM โรงเรียนสูงเม่นชนูปถัมภ์' +
+            '</div>'
+          );
+
+          $(win.document.body).find('table')
+            .addClass('compact table-bordered')
+            .css({
+              'font-size': '10pt',
+              'width': '100%',
+              'margin-top': '0'
+            });
+
+          $(win.document.body).find('table th, table td').css('padding', '3px 6px');
+        }
+      }
+    ]
+  });
+
+  // 🌟 2. เรียกฟังก์ชันแสดงผลเริ่มต้น
+  buildTeacherGrid();      
+  loadAwardData();         
+  updateDashboardStats();  
+  loadTeacherProfiles();   
+});
+
+   /**
+ * ฟังก์ชันดึงข้อมูลโปรไฟล์ครูและสถิติทั้งหมด
+ * หน้าที่: เรียกข้อมูลจากหลังบ้าน แล้วส่งไปสร้างหน้าจอ (Grid) แบบ Dynamic
+ */
+function loadTeacherProfiles() {
+  google.script.run
+    .withSuccessHandler(profiles => {
+      // 🌟 จุดสำคัญ: เมื่อได้ข้อมูล (profiles) มาแล้ว 
+      // เราสั่งให้ buildTeacherGrid ทำงานทันทีเพื่อสร้างการ์ดที่มีถ้วยรางวัลและป้าย UPDATE
+      buildTeacherGrid(profiles);
+    })
+    .withFailureHandler(err => {
+      console.error("ไม่สามารถดึงข้อมูลครูได้: ", err);
+      // แสดงแจ้งเตือนเล็กน้อยถ้าโหลดไม่สำเร็จ
+      Swal.fire('แจ้งเตือน', 'ไม่สามารถโหลดข้อมูลรายชื่อครูได้ในขณะนี้', 'warning');
+    })
+    .getTeacherProfiles();
+}
+
+    /**
+     * ฟังก์ชันเพิ่มแถวรายชื่อนักเรียน (Dynamic Row)
+     */
+    function addStudentRow() {
+      $('#studentList').append(`
+        <div class="row g-2 mb-2 student-row">
+          <div class="col-5">
+            <input type="text" class="form-control" name="studentName[]" placeholder="ชื่อ-สกุล นักเรียน">
+          </div>
+          <div class="col-3">
+            <select class="form-select" name="studentClass[]">
+              <option value="ม.1">ม.1</option><option value="ม.2">ม.2</option><option value="ม.3">ม.3</option>
+              <option value="ม.4">ม.4</option><option value="ม.5">ม.5</option><option value="ม.6">ม.6</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <input type="number" class="form-control" name="studentRoom[]" placeholder="ห้อง">
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-danger w-100" onclick="$(this).closest('.student-row').remove()">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+   /**
+ * 2. ฟังก์ชันกรองข้อมูลครู (ปรับปรุงใหม่)
+ */
+function filterByTeacher(name) {
+  window.isFiltering = true; // 🚩 บอกระบบว่า "ฉันตั้งใจกรองชื่อครูนะ อย่าเพิ่งล้างช่องค้นหา"
+  showPage('page-table');    // เรียกฟังก์ชันสลับหน้า
+  dataTable.search(name).draw(); // สั่งค้นหาชื่อครู
+}
+
+/**
+ * 7. ฟังก์ชันแก้ไขข้อมูล (ฉบับสมบูรณ์ที่สุด)
+ * หน้าที่: ดึงข้อมูลจากฐานข้อมูลมาเติม และสั่งเปิดส่วนขยาย (นักเรียน/ชั่วโมง) อัตโนมัติ
+ */
+function editRow(id) {
+  // 🌟 บอกระบบว่า "กำลังแก้ไข" เพื่อป้องกันฟังก์ชัน showPage สั่งล้างฟอร์ม
+  window.isEditing = true; 
+
+  // 1. แสดงสถานะกำลังโหลด
+  Swal.fire({ 
+    title: 'กำลังดึงข้อมูลทั้งหมด...', 
+    didOpen: () => Swal.showLoading(), 
+    allowOutsideClick: false 
+  });
+
+  google.script.run
+    .withSuccessHandler(data => {
+      Swal.close();
+      if (!data) {
+        window.isEditing = false; 
+        return Swal.fire('ผิดพลาด', 'ไม่พบข้อมูลที่ต้องการ', 'error');
+      }
+
+      // 2. เปลี่ยนหน้าไปที่หน้าฟอร์ม
+      showPage('page-form', $('.nav-link')[1]);
+      
+      const form = document.getElementById('awardForm');
+      form.reset(); // ล้างฟอร์มก่อนเพื่อให้สะอาด
+
+      // 3. จัดการวันที่ (ค.ศ. สำหรับปฏิทิน และแสดง พ.ศ. ให้คุณครูดู)
+      $('input[name="awardDate"]').val(data.awardDate);
+      $('#beYearLabel').remove(); 
+      if (data.awardDate) {
+        let d = new Date(data.awardDate);
+        let thaiFullDate = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+        $('input[name="awardDate"]').after(`
+          <div id="beYearLabel" class="mt-1 small text-success fw-bold">
+            <i class="fas fa-calendar-check"></i> วันที่ตรวจสอบแล้ว: ${thaiFullDate}
+          </div>
+        `);
+      }
+
+      // 4. เติมข้อมูลช่องพิมพ์ (Text Input)
+      $('#awardName').val(data.awardName || "");
+      $('#eventLocation').val(data.eventLocation || "");
+      if ($('#trainingHours').length) $('#trainingHours').val(data.trainingHours || "");
+
+      // 5. เติมข้อมูล Dropdown
+      setSelectValue(document.getElementById('awardTypeSelect'), data.awardType);
+      setSelectValue(document.getElementById('teacherNameSelect'), data.teacherName);
+      setSelectValue(document.getElementById('awardLevelSelect'), data.awardLevel);
+      setSelectValue(document.getElementById('awardResultSelect'), data.awardResult);
+
+      // 🌟 6. จุดสำคัญ: สั่งอัปเดตการมองเห็นช่องนักเรียน/ชั่วโมง ทันทีตามประเภทที่ดึงมาได้
+      if (typeof updateFormVisibility === "function") {
+        updateFormVisibility(data.awardType || $('#awardTypeSelect').val());
+      } else {
+        // กรณีไม่มีฟังก์ชันกลาง ให้สั่งเปิด/ปิดเองเบื้องต้น
+        $('#studentSection').toggle(data.awardType === 'teacher_coach');
+        $('#trainingHoursSection').toggle(data.awardType === 'self_development' || data.awardType === 'guest_speaker');
+      }
+
+      // 7. จัดการข้อมูลนักเรียน (ดึงรายชื่อมาแสดง)
+      $('.student-row').remove(); 
+      if (data.students && data.students.length > 0) {
+        data.students.forEach(st => {
+          addStudentRow(); 
+          let lastRow = $('.student-row').last();
+          lastRow.find('input[name="studentName[]"]').val(st.name);
+          lastRow.find('select[name="studentClass[]"]').val(st.className);
+          lastRow.find('input[name="studentRoom[]"]').val(st.room);
+        });
+      }
+
+      // 8. จัดการแสดงลิงก์ไฟล์เดิม
+      $('#oldFileLabel').remove();
+      if (data.fileUrl && data.fileUrl !== "") {
+        $('#certificateFile').after(`
+          <div id="oldFileLabel" class="mt-2 small text-primary">
+            <i class="fas fa-file-image"></i> <strong>ไฟล์เดิมในระบบ:</strong> 
+            <a href="${data.fileUrl}" target="_blank" class="text-decoration-underline">คลิกเพื่อดูรูปเดิม</a>
+          </div>
+        `);
+      }
+
+      // 9. ฝัง ID สำหรับการอัปเดต
+      if ($('#editId').length) $('#editId').remove();
+      $('#awardForm').prepend(`<input type="hidden" name="id" id="editId" value="${id}">`);
+
+      // 10. เปลี่ยนข้อความปุ่มบันทึก
+      $('.btn-submit').html('<i class="fas fa-save me-2"></i> บันทึกการแก้ไขข้อมูล');
+
+      window.scrollTo(0, 0);
+    })
+    .withFailureHandler(err => {
+      window.isEditing = false;
+      Swal.fire('ผิดพลาด', 'ไม่สามารถดึงข้อมูลได้: ' + err.message, 'error');
+    })
+    .getAwardById(id);
+}
+
+/**
+ * 🌟 ฟังก์ชันช่วยเลือกค่าใน Dropdown แบบ "ฉลาดขึ้น"
+ */
+function setSelectValue(selectElement, targetValue) {
+  if (!selectElement) return;
+  
+  // 1. ล้างค่าเดิมก่อน (ให้กลับไปที่ "เลือกรายการ" หรือ index 0)
+  selectElement.selectedIndex = 0; 
+  
+  if (!targetValue) return;
+  
+  const options = selectElement.options;
+  const target = targetValue.toString().trim().toLowerCase();
+  
+  // 2. รอบแรก: หาแบบ "เป๊ะๆ" (Exact Match) ทั้ง Value และ Text
+  for (let i = 0; i < options.length; i++) {
+    const optValue = options[i].value.toString().trim().toLowerCase();
+    const optText = options[i].text.toString().trim().toLowerCase();
+    
+    if (optValue === target || optText === target) {
+      selectElement.selectedIndex = i;
+      return; // เจอแล้วจบเลย
+    }
+  }
+  
+  // 3. รอบสอง: หาแบบ "ใกล้เคียง" (Partial Match) กรณีข้อมูลใน Sheet มาไม่เต็ม
+  for (let i = 0; i < options.length; i++) {
+    const optText = options[i].text.toLowerCase();
+    const optValue = options[i].value.toLowerCase();
+    
+    // ถ้า target อยู่ในชื่อ Option หรือ ชื่อ Option อยู่ใน target ให้ถือว่าใช่
+    if (target.includes(optText) || optText.includes(target) || 
+        target.includes(optValue) || optValue.includes(target)) {
+      selectElement.selectedIndex = i;
+      break;
+    }
+  }
+}
+
+    /**
+ * 8. ฟังก์ชันลบข้อมูล (deleteRow)
+ * หน้าที่: แสดงปุ่มยืนยันก่อนลบ และสั่งลบข้อมูลทั้งใน Sheet และไฟล์ที่เกี่ยวข้อง
+ */
+function deleteRow(id) {
+  Swal.fire({
+    title: 'ยืนยันการลบข้อมูล?',
+    text: "คุณจะไม่สามารถกู้คืนข้อมูลรหัส " + id + " นี้ได้อีก!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // แสดงสถานะ Loading ระหว่างลบ
+      Swal.fire({ 
+        title: 'กำลังลบข้อมูล...', 
+        didOpen: () => Swal.showLoading(), 
+        allowOutsideClick: false 
+      });
+      
+      google.script.run
+        .withSuccessHandler(res => {
+          Swal.fire('ลบสำเร็จ!', 'ข้อมูลถูกลบออกจากระบบเรียบร้อยแล้วครับ', 'success');
+          loadAwardData();         // สั่งรีโหลดตารางรายงานใหม่
+          updateDashboardStats();  // สั่งรีโหลดตัวเลขสถิติหน้าแรก
+        })
+        .withFailureHandler(err => {
+          // 🌟 เพิ่มส่วนนี้: แจ้งเตือนถ้าลบไม่สำเร็จ
+          Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถลบข้อมูลได้: ' + err, 'error');
+        })
+        .deleteData(id); // เรียกใช้ฟังก์ชัน deleteData ที่ฝั่ง Code.gs
+    }
+  });
+}
+
+/**
+ * 9. ฟังก์ชันแจ้งสถานะการเลือกไฟล์ (previewFile)
+ * หน้าที่: แจ้งเตือนเมื่อมีการเลือกไฟล์ เพื่อให้ผู้ใช้มั่นใจว่าไฟล์ถูกเลือกแล้ว
+ */
+function previewFile(input) {
+  if (input.files && input.files[0]) {
+    const fileName = input.files[0].name;
+    const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2); // คำนวณขนาดไฟล์เป็น MB
+    
+    Swal.fire({
+      icon: 'info',
+      title: 'เตรียมอัปโหลดไฟล์',
+      html: `เลือกไฟล์: <b>${fileName}</b><br>ขนาดไฟล์: ${fileSize} MB`,
+      timer: 2000,
+      showConfirmButton: false
+    });
+  }
+}
+/**
+ * 1. ฟังก์ชันจัดการการแสดงผลส่วนขยาย (Student/Hours/Levels)
+ * ปรับปรุง: รองรับทั้งค่าภาษาอังกฤษและไทย + เพิ่มแถวนักเรียนอัตโนมัติ
+ */
+function updateFormVisibility(type) {
+  // 🌟 ตรวจสอบค่าแบบยืดหยุ่น (รองรับทั้งรหัสโปรแกรมและข้อความที่โชว์หน้าเว็บ)
+  const isCoach = (type === 'teacher_coach' || type === 'ครูผู้ฝึกสอน');
+  const isDev = (type === 'self_development' || type === 'การพัฒนาตนเอง' || 
+                 type === 'guest_speaker' || type === 'วิทยากร');
+
+  console.log("ระบบกำลังตรวจสอบประเภท:", type, "ผลลัพธ์คือครูฝึกสอน:", isCoach);
+
+  // --- ส่วนข้อมูลนักเรียน ---
+  if (isCoach) {
+    $('#studentSection').fadeIn(300); // แสดงส่วนนักเรียนแบบนุ่มนวล
+    
+    // 🌟 ถ้าเลือกครูผู้ฝึกสอนแล้วยังไม่มีแถวให้นกรอก ให้เพิ่มแถวแรกให้อัตโนมัติทันที
+    if ($('.student-row').length === 0) {
+      addStudentRow();
+    }
+  } else {
+    $('#studentSection').hide();
+    // ถ้าไม่ได้อยู่ในโหมดแก้ไขงานเดิม ให้ล้างรายชื่อนักเรียนทิ้งเพื่อความสะอาด
+    if (!window.isEditing) {
+      $('.student-row').remove();
+    }
+  }
+
+  // --- ส่วนจำนวนชั่วโมง (สำหรับการพัฒนาตนเอง/วิทยากร) ---
+  if (isDev) {
+    $('#trainingHoursSection').fadeIn(300);
+  } else {
+    $('#trainingHoursSection').hide();
+    if (!window.isEditing) $('input[name="trainingHours"]').val('');
+  }
+  
+  // --- ส่วนระดับ/ผลรางวัล (ซ่อนถ้าเป็นการอบรม) ---
+  if (isDev) {
+    $('#levelContainer, #resultContainer').hide();
+  } else {
+    $('#levelContainer, #resultContainer').show();
+  }
+}
+
+// 2. ส่วนดักจับเหตุการณ์ (ต้องอยู่ใน $(document).ready)
+$(document).ready(() => {
+  // ... (โค้ด DataTable และอื่นๆ ของคุณครู) ...
+
+  // 🌟 ดักจับการเลือก "ประเภทผลงาน" แบบ Real-time
+  // ใช้ $(document).on เพื่อให้คำสั่งนี้ทำงานได้แน่นอนแม้จะมีการสลับหน้าไปมา
+  $(document).on('change', '#awardTypeSelect', function() {
+    const selectedValue = $(this).val();
+    updateFormVisibility(selectedValue);
+  });
+
+  // เรียกฟังก์ชันเริ่มต้นอื่นๆ
+  buildTeacherGrid();
+  loadAwardData();
+  updateDashboardStats();
+  loadTeacherProfiles();
+});
+/**
+ * ฟังก์ชันดูไฟล์เกียรติบัตร (View File)
+ * หน้าที่: เปิดลิงก์รูปภาพหรือ PDF ในแท็บใหม่
+ */
+function viewFile(url) {
+  // ตรวจสอบว่ามีลิงก์ไฟล์ไหม
+  if (!url || url === 'undefined' || url === '' || url === 'null') {
+    return Swal.fire({
+      icon: 'info',
+      title: 'ไม่พบไฟล์',
+      text: 'รายการนี้ไม่ได้แนบไฟล์เกียรติบัตรไว้ครับ',
+      confirmButtonColor: '#0d6efd'
+    });
+  }
+  
+  // ถ้ามีลิงก์ ให้เปิดแท็บใหม่
+  window.open(url, '_blank');
+}
+  </script>
+</body>
+</html>
